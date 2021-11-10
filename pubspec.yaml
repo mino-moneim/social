@@ -1,0 +1,45 @@
+name: social
+description: A new Flutter project.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.15.0-178.1.beta <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  google_fonts: ^2.1.0
+  flutter_bloc: ^7.3.3
+  bloc: ^7.2.1
+  conditional_builder_null_safety: ^0.0.6
+  fluttertoast: ^8.0.8
+  firebase_core: ^1.10.0
+  firebase_auth: ^3.2.0
+  cloud_firestore: ^3.1.0
+  firebase_messaging: ^11.1.0
+  shared_preferences: ^2.0.8
+  smooth_page_indicator: ^1.0.0+2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: IconBroken
+      fonts:
+        - asset: assets/icons/icons.ttf
