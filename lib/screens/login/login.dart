@@ -1,8 +1,9 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:social/shared/components/toast.dart';
 import 'package:social/shared/services/local/cache_helper.dart';
+
+import '/shared/components/toast.dart';
 import '/screens/login/cubit/cubit.dart';
 import '/screens/login/cubit/state.dart';
 import '/screens/screens.dart';
@@ -25,22 +26,25 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginError) {
             showToast(
-              text: 'error',
-              state: ToastStates.error,
+              text: state.error,
+              state: ToastStates.success,
             );
-          } else {
-            if (state is LoginSuccess) {
+          }
+          if (state is LoginSuccess) {
+            if (_formKey.currentState!.validate()) {
               CacheHelper.saveData(
                 key: 'uId',
-                value: state.userModel.uId,
+                value: state.uId,
               ).then((value) {
-                CacheHelper.getData(key: 'uId');
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const SocialScreen(),
                   ),
                 );
+
+                _emailController.clear();
+                _passwordController.clear();
               });
             }
           }
@@ -66,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                         height: 10.0,
                       ),
                       Text(
-                        'lorem text',
+                        'Login and communicate with your friends',
                         style: SocialTheme.darkText.bodyText1!.copyWith(
                           color: Colors.tealAccent,
                         ),
@@ -95,6 +99,14 @@ class LoginScreen extends StatelessWidget {
                           LoginCubit.get(context).changeIcon();
                         },
                         textInputAction: TextInputAction.done,
+                        onSubmit: (value) {
+                          if (_formKey.currentState!.validate()) {
+                            LoginCubit.get(context).userLogin(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+                          }
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -125,24 +137,34 @@ class LoginScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: TextButton(
-                          onPressed: () {
-                            LoginCubit.get(context).userLogin(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                            );
-                          },
-                          child: const Text(
-                            'LOGIN',
-                            style: TextStyle(
-                              fontSize: 18,
+                      ConditionalBuilder(
+                        condition: state is! LoginLoading,
+                        builder: (context) => Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                LoginCubit.get(context).userLogin(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                );
+                              }
+                            },
+                            child: const Text(
+                              'LOGIN',
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
+                          ),
+                        ),
+                        fallback: (context) => const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
                           ),
                         ),
                       ),

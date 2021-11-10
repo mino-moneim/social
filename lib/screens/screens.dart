@@ -1,3 +1,9 @@
 export 'login/login.dart';
 export 'register/register.dart';
 export 'social/social.dart';
+export 'chats/chats.dart';
+export 'feeds/feeds.dart';
+export 'new_post/new_post.dart';
+export 'users/users.dart';
+export 'profile/profile.dart';
+export 'settings/settings.dart';

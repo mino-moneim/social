@@ -22,4 +22,14 @@ class CacheHelper {
     if (value is bool) return await sharedPreferences!.setBool(key, value);
     if (value is double) return await sharedPreferences!.setDouble(key, value);
   }
+
+  static Future<bool?> removeAllData() async {
+    return await sharedPreferences!.clear();
+  }
+
+  static Future<bool?> removeData({
+    required String key,
+  }) async {
+    return await sharedPreferences!.remove(key);
+  }
 }

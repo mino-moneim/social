@@ -1,5 +1,3 @@
-import 'package:social/models/user_model.dart';
-
 abstract class LoginStates {}
 
 class LoginInitial extends LoginStates {}
@@ -7,9 +5,9 @@ class LoginInitial extends LoginStates {}
 class LoginLoading extends LoginStates {}
 
 class LoginSuccess extends LoginStates {
-  late final UserModel userModel;
+  final String uId;
 
-  LoginSuccess(this.userModel);
+  LoginSuccess(this.uId);
 }
 
 class LoginError extends LoginStates {
@@ -28,4 +26,12 @@ class RegisterError extends LoginStates {
   final String error;
 
   RegisterError(this.error);
+}
+
+class CreateUserSuccess extends LoginStates {}
+
+class CreateUserError extends LoginStates {
+  final String error;
+
+  CreateUserError(this.error);
 }

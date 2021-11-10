@@ -169,6 +169,7 @@ class SocialTheme {
   static ThemeData light() {
     return ThemeData(
       primarySwatch: Colors.teal,
+      primaryColor: Colors.teal,
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
         foregroundColor: Colors.teal,
@@ -185,9 +186,9 @@ class SocialTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.teal,
-        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.teal,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.tealAccent,
       ),
     );
   }
@@ -196,6 +197,7 @@ class SocialTheme {
     return ThemeData(
       brightness: Brightness.dark,
       primarySwatch: Colors.teal,
+      primaryColor: Colors.grey[900],
       appBarTheme: AppBarTheme(
         foregroundColor: Colors.teal,
         backgroundColor: Colors.grey[850],
@@ -209,9 +211,9 @@ class SocialTheme {
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: Colors.teal,
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         type: BottomNavigationBarType.fixed,
-        // backgroundColor: Colors.teal,
+        backgroundColor: Colors.grey[900],
         selectedItemColor: Colors.teal,
         unselectedItemColor: Colors.white,
       ),

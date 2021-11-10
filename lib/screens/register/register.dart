@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +22,16 @@ class RegisterScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => LoginCubit(),
       child: BlocConsumer<LoginCubit, LoginStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is RegisterSuccess) {
+            Navigator.pop(context);
+
+            _nameController.clear();
+            _phoneController.clear();
+            _emailController.clear();
+            _passwordController.clear();
+          }
+        },
         builder: (context, state) => Scaffold(
           backgroundColor: Colors.teal,
           appBar: AppBar(
@@ -56,7 +66,7 @@ class RegisterScreen extends StatelessWidget {
                         height: 10.0,
                       ),
                       Text(
-                        'lorem text',
+                        'Register to discover our world',
                         style: SocialTheme.darkText.bodyText1!.copyWith(
                           color: Colors.tealAccent,
                         ),
@@ -105,22 +115,49 @@ class RegisterScreen extends StatelessWidget {
                           LoginCubit.get(context).changeIcon();
                         },
                         textInputAction: TextInputAction.done,
+                        onSubmit: (value) {
+                          if (_formKey.currentState!.validate()) {
+                            LoginCubit.get(context).userRegister(
+                              name: _nameController.text,
+                              phone: _phoneController.text,
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+                          }
+                        },
                       ),
                       const SizedBox(
                         height: 30.0,
                       ),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0),
+                      ConditionalBuilder(
+                        condition: state is! RegisterLoading,
+                        fallback: (context) => const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
                         ),
-                        child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'REGISTER',
-                            style: TextStyle(
-                              fontSize: 18,
+                        builder: (context) => Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                LoginCubit.get(context).userRegister(
+                                  name: _nameController.text,
+                                  phone: _phoneController.text,
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                );
+                              }
+                            },
+                            child: const Text(
+                              'REGISTER',
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         ),
