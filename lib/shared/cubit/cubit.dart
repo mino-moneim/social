@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:social/models/user_model.dart';
+import 'package:social/shared/components/uid.dart';
 import 'package:social/shared/services/local/cache_helper.dart';
 import 'package:social/theme.dart';
-
 import '/screens/screens.dart';
 import '/shared/cubit/states.dart';
 
@@ -49,5 +51,23 @@ class SocialCubit extends Cubit<SocialStates> {
     CacheHelper.removeAllData();
 
     emit(Logout());
+  }
+
+  UserModel? model;
+
+  Future<void> getUserData() async {
+    emit(UserDataLoading());
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .get()
+        .then((value) {
+      model = UserModel.fromJson(value.data());
+
+      emit(UserDataSuccess());
+    }).catchError((error) {
+      emit(UserDataError(error.toString()));
+    });
   }
 }

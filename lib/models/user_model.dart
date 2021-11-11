@@ -21,8 +21,8 @@ class UserModel {
     this.passwordVerified = false,
   });
 
-  UserModel.fromJson(Map<String, dynamic> json) {
-    uId = json['uId'];
+  UserModel.fromJson(Map<String, dynamic>? json) {
+    uId = json!['uId'];
     name = json['name'];
     email = json['email'];
     password = json['password'];

@@ -170,7 +170,7 @@ class SocialTheme {
     return ThemeData(
       primarySwatch: Colors.teal,
       primaryColor: Colors.teal,
-      scaffoldBackgroundColor: Colors.white,
+      // scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
         foregroundColor: Colors.teal,
         backgroundColor: Colors.white,

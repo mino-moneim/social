@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -62,10 +63,8 @@ class SocialScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const CircleAvatar(
-                        child: FlutterLogo(
-                          size: 50,
-                        ),
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(cubit.model!.image),
                         radius: 35,
                       ),
                       const SizedBox(
@@ -73,7 +72,7 @@ class SocialScreen extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'name',
+                          cubit.model!.name,
                           style: SocialTheme.darkText.headline5,
                         ),
                       ),
@@ -82,7 +81,7 @@ class SocialScreen extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'email',
+                          cubit.model!.email,
                           style: SocialTheme.darkText.bodyText1,
                         ),
                       ),
@@ -123,6 +122,8 @@ class SocialScreen extends StatelessWidget {
                       onChanged: (value) {
                         cubit.changeTheme();
                       },
+                      activeColor: Colors.teal,
+                      inactiveThumbColor: Colors.teal,
                     ),
                   ],
                 ),
@@ -162,7 +163,13 @@ class SocialScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: cubit.screens[cubit.currentIndex],
+        body: ConditionalBuilder(
+          condition: state is! UserDataSuccess,
+          builder: (context) => cubit.screens[cubit.currentIndex],
+          fallback: (context) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
       ),
     );
   }
