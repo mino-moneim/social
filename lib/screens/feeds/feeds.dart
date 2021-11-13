@@ -10,21 +10,20 @@ class FeedsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {},
-      builder: (context, state) => ListView.separated(
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index) => postBuild(context),
-        separatorBuilder: (context, index) => const SizedBox(
-          height: 1.0,
-        ),
-        itemCount: 10,
-      ),
-    );
+        listener: (context, state) {},
+        builder: (context, state) {
+          return ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) => postBuild(context),
+            separatorBuilder: (context, index) => const SizedBox(
+              height: 1.0,
+            ),
+            itemCount: 10,
+          );
+        });
   }
 
   Widget postBuild(context) {
-    var model = SocialCubit.get(context).model;
-
     return Padding(
       padding: const EdgeInsets.only(
         top: 5.0,
@@ -39,7 +38,8 @@ class FeedsScreen extends StatelessWidget {
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(model!.image),
+                    backgroundImage:
+                        NetworkImage(SocialCubit.get(context).model!.image),
                     radius: 20,
                   ),
                   const SizedBox(
@@ -49,7 +49,7 @@ class FeedsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        model.name,
+                        SocialCubit.get(context).model!.name,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                       Text(
@@ -86,7 +86,7 @@ class FeedsScreen extends StatelessWidget {
               height: 200.0,
               child: Image(
                 fit: BoxFit.cover,
-                image: NetworkImage(model.cover),
+                image: NetworkImage(SocialCubit.get(context).model!.cover),
               ),
             ),
             const SizedBox(
@@ -134,7 +134,8 @@ class FeedsScreen extends StatelessWidget {
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(model.image),
+                    backgroundImage:
+                        NetworkImage(SocialCubit.get(context).model!.image),
                     radius: 15,
                   ),
                   const SizedBox(

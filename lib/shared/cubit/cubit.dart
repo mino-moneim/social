@@ -47,11 +47,9 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   void logout() {
-    FirebaseAuth.instance.signOut().then((value) {
-      CacheHelper.removeAllData();
+    CacheHelper.removeAllData();
 
-      emit(Logout());
-    });
+    emit(Logout());
   }
 
   UserModel? model;
@@ -64,7 +62,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
-      model = UserModel.fromJson(value.data()!);
+      model = UserModel.fromJson(value.data());
 
       emit(UserDataSuccess());
     }).catchError((error) {

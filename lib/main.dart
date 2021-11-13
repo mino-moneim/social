@@ -2,10 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '/shared/cubit/states.dart';
 import '/screens/screens.dart';
 import '/shared/components/uid.dart';
 import '/shared/cubit/cubit.dart';
-import '/shared/cubit/states.dart';
 import '/shared/services/local/cache_helper.dart';
 
 void main() async {
@@ -35,10 +35,8 @@ class SocialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => SocialCubit()),
-      ],
+    return BlocProvider(
+      create: (context) => SocialCubit(),
       child: BlocConsumer<SocialCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) => MaterialApp(
