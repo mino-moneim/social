@@ -1,11 +1,18 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
-import 'package:social/models/user_model.dart';
-import 'package:social/shared/services/local/cache_helper.dart';
-import 'package:social/theme.dart';
+import '/models/post_model.dart';
+import '/shared/components/uid.dart';
+import '/models/user_model.dart';
+import '/shared/services/local/cache_helper.dart';
+import '/theme.dart';
 import '/screens/screens.dart';
 import '/shared/cubit/states.dart';
 
@@ -48,6 +55,7 @@ class SocialCubit extends Cubit<SocialStates> {
 
   void logout() {
     CacheHelper.removeAllData();
+    CacheHelper.removeData(key: uId!);
 
     emit(Logout());
   }
@@ -67,6 +75,260 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(UserDataSuccess());
     }).catchError((error) {
       emit(UserDataError(error.toString()));
+    });
+  }
+
+  File? image;
+  ImagePicker picker = ImagePicker();
+
+  Future<void> getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      image = File(pickedFile.path);
+
+      emit(ImageSelectedSuccess());
+    } else {
+      if (kDebugMode) {
+        print('No image selected');
+      }
+
+      emit(ImageSelectedError());
+    }
+  }
+
+  void uploadImage({
+    String? cover,
+  }) {
+    FirebaseStorage.instance
+        .ref()
+        .child('${model!.name}/${Uri.file(image!.path).pathSegments.last}')
+        .putFile(image!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        updateUser(
+          cover: value,
+        );
+
+        emit(ImageUploadedSuccess());
+      }).catchError((error) {
+        emit(ImageUploadedError());
+      });
+    }).catchError((error) {
+      emit(ImageUploadedError());
+    });
+  }
+
+  void updateUser({
+    String? cover,
+  }) {
+    emit(UploadedLoading());
+
+    if (cover == null) {
+      uploadImage();
+      UserModel userModel = UserModel(
+        name: model!.name,
+        email: model!.email,
+        password: model!.password,
+        phone: model!.phone,
+        bio: model!.bio,
+        image: model!.image,
+        cover: cover ?? model!.cover,
+        uId: model!.uId,
+      );
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update(userModel.toMap())
+          .then((value) {
+        getUserData();
+      }).then((value) {
+        emit(UploadedSuccess());
+      }).catchError((error) {
+        emit(UploadedError());
+      });
+    } else {
+      UserModel userModel = UserModel(
+        name: model!.name,
+        email: model!.email,
+        password: model!.password,
+        phone: model!.phone,
+        bio: model!.bio,
+        image: model!.image,
+        cover: cover,
+        uId: model!.uId,
+      );
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update(userModel.toMap())
+          .then((value) {
+        getUserData();
+      }).then((value) {
+        emit(UploadedSuccess());
+      }).catchError((error) {
+        emit(UploadedError());
+      });
+    }
+  }
+
+  File? postImage;
+  ImagePicker postPicker = ImagePicker();
+
+  Future<void> getPostImage() async {
+    final pickedFile = await postPicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      postImage = File(pickedFile.path);
+
+      emit(UploadPostImageSuccess());
+    } else {
+      if (kDebugMode) {
+        print('No image selected');
+      }
+
+      emit(UploadPostImageError());
+    }
+  }
+
+  void createPostImage({
+    required String? text,
+    required String? dateTime,
+  }) {
+    emit(CreatePostLoading());
+
+    FirebaseStorage.instance
+        .ref()
+        .child(
+            'posts/${model!.name}/${Uri.file(postImage!.path).pathSegments.last}')
+        .putFile(postImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        createPost(
+          text: text,
+          dateTime: dateTime,
+          postImage: value,
+        );
+
+        emit(CreatePostSuccess());
+      }).catchError((error) {
+        emit(CreatePostError(error.toString()));
+      });
+    }).catchError((error) {
+      emit(CreatePostError(error.toString()));
+    });
+  }
+
+  void createPost({
+    String? name,
+    String? uId,
+    String? image,
+    required String? dateTime,
+    String? postImage = '',
+    required String? text,
+    String? postId = '',
+  }) {
+    emit(CreatePostLoading());
+
+    PostModel postModel = PostModel(
+      name: model!.name,
+      uId: model!.uId,
+      image: model!.image,
+      dateTime: dateTime,
+      postImage: postImage,
+      text: text,
+      postId: postId,
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .add(postModel.toMap())
+        .then((value) {
+      updatePostId(
+        dateTime: dateTime,
+        text: text,
+        postId: value.id,
+        postImage: postImage,
+      );
+
+      emit(CreatePostSuccess());
+    }).catchError((error) {
+      emit(CreatePostError(error.toString()));
+    });
+  }
+
+  void updatePostId({
+    String? name,
+    String? uId,
+    String? image,
+    String? postImage,
+    required String? dateTime,
+    required String? text,
+    required String postId,
+  }) {
+    PostModel postModel = PostModel(
+      name: model!.name,
+      uId: model!.uId,
+      image: model!.image,
+      dateTime: dateTime,
+      postImage: postImage,
+      text: text,
+      postId: postId,
+    );
+
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postModel.postId)
+        .update(postModel.toMap())
+        .then((value) {
+      emit(CreatePostSuccess());
+    }).catchError((error) {
+      emit(CreatePostError(error.toString()));
+    });
+  }
+
+  void removeImage() {
+    postImage = null;
+
+    emit(RemovePostImage());
+  }
+
+  List<PostModel> posts = [];
+  List<int> likes = [];
+
+  void getPosts() {
+    emit(GetPostsLoading());
+
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+      for (var post in value.docs) {
+        post.reference.collection('likes').get().then((value) {
+          posts.add(PostModel.fromJson(post.data()));
+          likes.add(value.docs.length);
+        }).catchError((error) {});
+      }
+
+      emit(GetPostsSuccess());
+    }).catchError((error) {
+      emit(GetPostsError(error.toString()));
+    });
+  }
+
+  void likePost({
+    required String? postId,
+  }) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(model!.uId)
+        .set({
+      'like': true,
+    }).then((value) {
+      emit(LikesSuccess());
+    }).catchError((error) {
+      emit(LikesError(error.toString()));
     });
   }
 }

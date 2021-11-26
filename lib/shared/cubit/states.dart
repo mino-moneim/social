@@ -17,3 +17,59 @@ class UserDataError extends SocialStates {
 
   UserDataError(this.error);
 }
+
+class ImageSelectedSuccess extends SocialStates {}
+
+class ImageSelectedError extends SocialStates {}
+
+class ImageUploadedSuccess extends SocialStates {}
+
+class ImageUploadedError extends SocialStates {}
+
+class UploadedSuccess extends SocialStates {}
+
+class UploadedError extends SocialStates {}
+
+class UploadedLoading extends SocialStates {}
+
+// post
+
+class UploadPostImageSuccess extends SocialStates {}
+
+class UploadPostImageError extends SocialStates {}
+
+class PostImageUploadedSuccess extends SocialStates {}
+
+class PostImageUploadedError extends SocialStates {}
+
+class CreatePostLoading extends SocialStates {}
+
+class CreatePostSuccess extends SocialStates {}
+
+class CreatePostError extends SocialStates {
+  final String error;
+
+  CreatePostError(this.error);
+}
+
+class GetPostsLoading extends SocialStates {}
+
+class GetPostsSuccess extends SocialStates {}
+
+class GetPostsError extends SocialStates {
+  final String error;
+
+  GetPostsError(this.error);
+}
+
+class RemovePostImage extends SocialStates {}
+
+class LikesLoading extends SocialStates {}
+
+class LikesSuccess extends SocialStates {}
+
+class LikesError extends SocialStates {
+  final String error;
+
+  LikesError(this.error);
+}

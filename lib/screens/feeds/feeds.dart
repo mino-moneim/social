@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social/shared/cubit/cubit.dart';
-import 'package:social/shared/cubit/states.dart';
-import 'package:social/shared/styles/icon_broken.dart';
+import 'package:social/models/post_model.dart';
+
+import '/shared/cubit/cubit.dart';
+import '/shared/cubit/states.dart';
+import '/shared/styles/icon_broken.dart';
 
 class FeedsScreen extends StatelessWidget {
   const FeedsScreen({Key? key}) : super(key: key);
@@ -14,16 +16,17 @@ class FeedsScreen extends StatelessWidget {
         builder: (context, state) {
           return ListView.separated(
             physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) => postBuild(context),
+            itemBuilder: (context, index) => postBuild(
+                SocialCubit.get(context).posts[index], context, index),
             separatorBuilder: (context, index) => const SizedBox(
               height: 1.0,
             ),
-            itemCount: 10,
+            itemCount: SocialCubit.get(context).posts.length,
           );
         });
   }
 
-  Widget postBuild(context) {
+  Widget postBuild(PostModel posts, context, index) {
     return Padding(
       padding: const EdgeInsets.only(
         top: 5.0,
@@ -32,14 +35,14 @@ class FeedsScreen extends StatelessWidget {
       child: Card(
         elevation: 5.0,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(SocialCubit.get(context).model!.image),
+                    backgroundImage: NetworkImage(posts.image!),
                     radius: 20,
                   ),
                   const SizedBox(
@@ -49,11 +52,11 @@ class FeedsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        SocialCubit.get(context).model!.name,
+                        posts.name!,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                       Text(
-                        'June 22, 2021 at 09:45 pm',
+                        posts.dateTime!,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Colors.grey,
                             ),
@@ -76,19 +79,21 @@ class FeedsScreen extends StatelessWidget {
                 color: Colors.grey[300],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Text(
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.'),
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 200.0,
-              child: Image(
-                fit: BoxFit.cover,
-                image: NetworkImage(SocialCubit.get(context).model!.cover),
+                posts.text!,
               ),
             ),
+            if (posts.postImage != '')
+              SizedBox(
+                width: double.infinity,
+                height: 200.0,
+                child: Image(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(posts.postImage!),
+                ),
+              ),
             const SizedBox(
               height: 15.0,
             ),
@@ -96,24 +101,27 @@ class FeedsScreen extends StatelessWidget {
               height: 5.0,
             ),
             Row(
-              children: const [
-                SizedBox(
+              children: [
+                const SizedBox(
                   width: 20.0,
                 ),
-                Icon(
+                const Icon(
                   Icons.favorite_border_outlined,
                   color: Colors.red,
                   size: 20,
                 ),
-                Text('100'),
-                Spacer(),
-                Icon(
+                const SizedBox(
+                  width: 5.0,
+                ),
+                Text('${SocialCubit.get(context).likes[index]}'),
+                const Spacer(),
+                const Icon(
                   IconBroken.chat,
                   color: Colors.amber,
                   size: 20,
                 ),
-                Text('100 comment'),
-                SizedBox(
+                const Text('100 comment'),
+                const SizedBox(
                   width: 20.0,
                 ),
               ],
@@ -143,12 +151,26 @@ class FeedsScreen extends StatelessWidget {
                   ),
                   const Text('write a comment...'),
                   const Spacer(),
-                  const Icon(
-                    Icons.favorite_border_outlined,
-                    color: Colors.red,
-                    size: 20,
+                  Expanded(
+                    child: IconButton(
+                      onPressed: () {
+                        SocialCubit.get(context).likePost(postId: posts.postId);
+                      },
+                      icon: Row(
+                        children: const [
+                          Icon(
+                            Icons.favorite_border_outlined,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text('like'),
+                        ],
+                      ),
+                    ),
                   ),
-                  const Text('like'),
                 ],
               ),
             ),
