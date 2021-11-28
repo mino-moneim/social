@@ -1,11 +1,11 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social/models/user_model.dart';
-import 'package:social/screens/chats/chat_details.dart';
 
-import 'package:social/shared/cubit/cubit.dart';
-import 'package:social/shared/cubit/states.dart';
+import '/models/user_model.dart';
+import '/screens/chats/chat_details.dart';
+import '/shared/cubit/cubit.dart';
+import '/shared/cubit/states.dart';
 
 import 'chat_details.dart';
 

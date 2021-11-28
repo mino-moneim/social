@@ -1,17 +1,50 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '/shared/components/toast.dart';
 import '/shared/cubit/states.dart';
 import '/screens/screens.dart';
 import '/shared/components/uid.dart';
 import '/shared/cubit/cubit.dart';
 import '/shared/services/local/cache_helper.dart';
 
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  showToast(
+    text: 'test api from postman',
+    state: ToastStates.success,
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+
+  var token = await FirebaseMessaging.instance.getToken();
+
+  print(token.toString());
+
+  FirebaseMessaging.onMessage.listen((event) {
+    print(event.data.toString());
+
+    showToast(
+      text: 'test api from postman',
+      state: ToastStates.success,
+    );
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((event) {
+    print(event.data.toString());
+
+    showToast(
+      text: 'test api from postman',
+      state: ToastStates.success,
+    );
+  });
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await CacheHelper.init();
 

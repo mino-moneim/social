@@ -114,6 +114,7 @@ class PostsScreen extends StatelessWidget {
 
                               textController.clear();
                               SocialCubit.get(context).removeImage();
+                              SocialCubit.get(context).currentIndex = 0;
                             } else {
                               SocialCubit.get(context).createPost(
                                 text: textController.text,
@@ -122,6 +123,7 @@ class PostsScreen extends StatelessWidget {
 
                               textController.clear();
                               SocialCubit.get(context).removeImage();
+                              SocialCubit.get(context).currentIndex = 0;
                             }
                           },
                           child: const Text('POST'),

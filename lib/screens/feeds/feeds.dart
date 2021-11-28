@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/models/post_model.dart';
@@ -15,14 +16,20 @@ class FeedsScreen extends StatelessWidget {
     return BlocConsumer<SocialCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          return ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) => postBuild(
-                SocialCubit.get(context).posts[index], context, index),
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 1.0,
+          return ConditionalBuilder(
+            condition: SocialCubit.get(context).posts.isNotEmpty,
+            fallback: (context) => const Center(
+              child: CircularProgressIndicator(),
             ),
-            itemCount: SocialCubit.get(context).posts.length,
+            builder: (context) => ListView.separated(
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) => postBuild(
+                  SocialCubit.get(context).posts[index], context, index),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 1.0,
+              ),
+              itemCount: SocialCubit.get(context).posts.length,
+            ),
           );
         });
   }
