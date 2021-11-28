@@ -13,175 +13,169 @@ class SocialScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SocialCubit()
-        ..getUserData()
-        ..getPosts(),
-      child: BlocConsumer<SocialCubit, SocialStates>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            var cubit = SocialCubit.get(context);
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(cubit.titles[cubit.currentIndex]),
-              ),
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: cubit.currentIndex,
-                onTap: (index) {
-                  cubit.changeIndex(index);
-                },
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      IconBroken.home,
-                    ),
-                    label: 'Home',
+    return BlocConsumer<SocialCubit, SocialStates>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          var cubit = SocialCubit.get(context);
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(cubit.titles[cubit.currentIndex]),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: cubit.currentIndex,
+              onTap: (index) {
+                cubit.changeIndex(index);
+              },
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    IconBroken.home,
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      IconBroken.chat,
-                    ),
-                    label: 'Chat',
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    IconBroken.chat,
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      IconBroken.upload,
-                    ),
-                    label: 'New Post',
+                  label: 'Chat',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    IconBroken.upload,
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      IconBroken.user1,
-                    ),
-                    label: 'Users',
+                  label: 'New Post',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    IconBroken.user1,
                   ),
-                ],
-              ),
-              drawer: ConditionalBuilder(
-                condition: SocialCubit.get(context).model != null,
-                fallback: (context) => const CircularProgressIndicator(),
-                builder: (context) => Drawer(
-                  child: ListView(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        child: DrawerHeader(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(cubit.model!.image),
-                                radius: 35,
-                              ),
-                              const SizedBox(
-                                height: 7.0,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  cubit.model!.name,
-                                  style: SocialTheme.darkText.headline5,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  cubit.model!.email,
-                                  style: SocialTheme.darkText.bodyText1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  label: 'Users',
+                ),
+              ],
+            ),
+            drawer: ConditionalBuilder(
+              condition: SocialCubit.get(context).model != null,
+              fallback: (context) => const CircularProgressIndicator(),
+              builder: (context) => Drawer(
+                child: ListView(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
                       ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      ListTile(
-                        leading: const Icon(IconBroken.profile),
-                        title: Text(
-                          'Profile',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          // Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.dark_mode_outlined),
-                        title: Row(
+                      child: DrawerHeader(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Theme',
-                              style: Theme.of(context).textTheme.bodyText1,
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(cubit.model!.image),
+                              radius: 35,
                             ),
-                            const Spacer(),
-                            Switch(
-                              value: cubit.value,
-                              onChanged: (value) {
-                                cubit.changeTheme();
-                              },
-                              activeColor: Colors.teal,
-                              inactiveThumbColor: Colors.teal,
+                            const SizedBox(
+                              height: 7.0,
+                            ),
+                            Expanded(
+                              child: Text(
+                                cubit.model!.name,
+                                style: SocialTheme.darkText.headline5,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 5.0,
+                            ),
+                            Expanded(
+                              child: Text(
+                                cubit.model!.email,
+                                style: SocialTheme.darkText.bodyText1,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      ListTile(
-                        leading: const Icon(IconBroken.setting),
-                        title: Text(
-                          'Settings',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          // Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SettingsScreen(),
-                            ),
-                          );
-                        },
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    ListTile(
+                      leading: const Icon(IconBroken.profile),
+                      title: Text(
+                        'Profile',
+                        style: Theme.of(context).textTheme.bodyText1,
                       ),
-                      ListTile(
-                        leading: const Icon(IconBroken.logout),
-                        title: Text(
-                          'Logout',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        onTap: () {
-                          cubit.logout();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                          );
-                        },
+                      onTap: () {
+                        // Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.dark_mode_outlined),
+                      title: Row(
+                        children: [
+                          Text(
+                            'Theme',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          const Spacer(),
+                          Switch(
+                            value: cubit.value,
+                            onChanged: (value) {
+                              cubit.changeTheme();
+                            },
+                            activeColor: Colors.teal,
+                            inactiveThumbColor: Colors.teal,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    ListTile(
+                      leading: const Icon(IconBroken.setting),
+                      title: Text(
+                        'Settings',
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      onTap: () {
+                        // Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SettingsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(IconBroken.logout),
+                      title: Text(
+                        'Logout',
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      onTap: () {
+                        cubit.logout();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-              body: ConditionalBuilder(
-                condition: SocialCubit.get(context).model != null,
-                builder: (context) => cubit.screens[cubit.currentIndex],
-                fallback: (context) => const Center(
-                  child: CircularProgressIndicator(),
-                ),
+            ),
+            body: ConditionalBuilder(
+              condition: SocialCubit.get(context).model != null,
+              builder: (context) => cubit.screens[cubit.currentIndex],
+              fallback: (context) => const Center(
+                child: CircularProgressIndicator(),
               ),
-            );
-          }),
-    );
+            ),
+          );
+        });
   }
 }

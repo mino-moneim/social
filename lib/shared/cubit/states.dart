@@ -73,3 +73,31 @@ class LikesError extends SocialStates {
 
   LikesError(this.error);
 }
+
+class CommentsLoading extends SocialStates {}
+
+class CommentsSuccess extends SocialStates {}
+
+class CommentsError extends SocialStates {
+  final String error;
+
+  CommentsError(this.error);
+}
+
+class GetUsersLoading extends SocialStates {}
+
+class GetUsersSuccess extends SocialStates {}
+
+class GetUsersError extends SocialStates {
+  final String error;
+
+  GetUsersError(this.error);
+}
+
+// chat
+
+class SendMessageSuccess extends SocialStates {}
+
+class SendMessageError extends SocialStates {}
+
+class GetMessageSuccess extends SocialStates {}

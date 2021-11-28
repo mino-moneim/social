@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social/models/post_model.dart';
+import 'package:social/screens/comments/comments.dart';
 
 import '/shared/cubit/cubit.dart';
 import '/shared/cubit/states.dart';
@@ -120,7 +121,14 @@ class FeedsScreen extends StatelessWidget {
                   color: Colors.amber,
                   size: 20,
                 ),
-                const Text('100 comment'),
+                const SizedBox(
+                  width: 5.0,
+                ),
+                Text('${SocialCubit.get(context).comments[index]}'),
+                const SizedBox(
+                  width: 5.0,
+                ),
+                const Text('comment'),
                 const SizedBox(
                   width: 20.0,
                 ),
@@ -149,7 +157,20 @@ class FeedsScreen extends StatelessWidget {
                   const SizedBox(
                     width: 15.0,
                   ),
-                  const Text('write a comment...'),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CommentsScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'write a comment...',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ),
                   const Spacer(),
                   Expanded(
                     child: IconButton(

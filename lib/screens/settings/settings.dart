@@ -13,7 +13,7 @@ class SettingsScreen extends StatelessWidget {
       builder: (context, state) => Scaffold(
         appBar: AppBar(),
         body: const Center(
-          child: Text('settings'),
+          child: Text('حظ سعيد المره القادمه'),
         ),
       ),
     );

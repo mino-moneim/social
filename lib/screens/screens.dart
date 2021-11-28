@@ -7,3 +7,4 @@ export 'new_post/new_post.dart';
 export 'users/users.dart';
 export 'profile/profile.dart';
 export 'settings/settings.dart';
+export 'chats/chat_details.dart';
